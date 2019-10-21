@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="2"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_rowSpan="1"
+        android:layout_columnSpan="2"
+        android:layout_row="0"
+        android:layout_columnWeight="1"
+        android:layout_rowWeight="1"
+        />
+
+    <TextView
+        android:id="@+id/targetURI"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_rowSpan="1"
+        android:layout_columnSpan="2"
+        android:layout_row="2"
+        android:layout_columnWeight="1"
+        android:hint="ImageURL"
+        android:layout_rowWeight=".1"/>
+
+    <Button
+        android:id="@+id/loadImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_rowWeight=".5"
+        android:text="Load Image"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"/>
+
+    <Button
+        android:id="@+id/scanImage"
+        android:layout_width="0dp"
+        android:visibility="gone"
+        android:layout_height="0dp"
+        android:text="Click this mofucka"
+        android:layout_columnWeight="1"
+        android:layout_rowWeight=".5"
+        android:layout_row="4"
+        android:layout_column="1"
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"/>
+
+</GridLayout>
