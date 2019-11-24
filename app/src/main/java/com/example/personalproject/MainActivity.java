@@ -1,65 +1,163 @@
 package com.example.personalproject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
-import org.w3c.dom.Text;
+import androidx.appcompat.view.menu.ActionMenuItemView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 public class MainActivity extends AppCompatActivity {
+    static final String TAG = "MainActivity";
+    static final int TAKE_PICTURE_REQUEST = 2;
+    static final int UPLOAD_PICTURE_REQUEST = 1;
+    static final int WRITE_EXTERNAL_REQUEST = 3;
     TextView textTargetUri;
     ImageView targetImage;
     Button scanImage;
+    Bitmap imageMap;
+    String imageURI;
+    String currentPhotoPath;
+
+
+    //not used yet, might use later.
     protected boolean sucessfulUpload;
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.takePicture:
+                dispatchTakePictureIntent();
+                return true;
+            case R.id.uploadPicture:
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, UPLOAD_PICTURE_REQUEST);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button loadImageButton = (Button) findViewById(R.id.loadImage);
-        textTargetUri = (TextView) findViewById(R.id.targetURI);
-        targetImage = (ImageView) findViewById(R.id.imageView);
+        textTargetUri = findViewById(R.id.targetURI);
+        targetImage = findViewById(R.id.imageView);
+        scanImage = findViewById(R.id.scanImage);
 
-        loadImageButton.setOnClickListener(new Button.OnClickListener(){
+        scanImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View arg0){
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 0);
-            }});
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ScanImageActivity.class);
+                intent.putExtra("imageURI", imageURI);
+
+                startActivity(intent);
+            }
+        });
+
+
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.cam_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-        scanImage = (Button) findViewById(R.id.scanImage);
+        scanImage = findViewById(R.id.scanImage);
 
-        if(resultCode == RESULT_OK){
+        if(requestCode == UPLOAD_PICTURE_REQUEST && resultCode == RESULT_OK){
+            scanImage.setClickable(true);
             sucessfulUpload = true;
             Uri targetUri = data.getData();
             textTargetUri.setText(targetUri.toString());
-            Bitmap bitmap;
+            Log.d(TAG, "onActivityResult: " + targetUri);
+            //Bitmap bitmap;
+            imageURI = targetUri.toString();
             scanImage.setVisibility(View.VISIBLE);
             try{
-                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
-                targetImage.setImageBitmap(bitmap);
+                imageMap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
+                targetImage.setImageBitmap(imageMap);
             }catch (FileNotFoundException e){
                 e.printStackTrace();
             }
+        }else if(requestCode == TAKE_PICTURE_REQUEST && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            targetImage.setImageBitmap(imageBitmap);
+        }
+    }//end onActivityResult
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try{
+                photoFile = createImageFile();
+            }catch (IOException e){
+                //there was an error creating the file
+                Toast.makeText(this, "Error processing image.", Toast.LENGTH_SHORT).show();
+            }
+            //continue only if the file upload worked properly
+            if(photoFile != null){
+                Uri photoURI = FileProvider.getUriForFile(this, "com.example.personalproject", photoFile);
+                imageURI = photoURI.toString();
+
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST);
+            }
         }
     }
-}
+
+    private File createImageFile() throws IOException{
+            //create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        File image = File.createTempFile(
+                imageFileName, //prefix
+                ".jpg", //suffix
+                storageDir);  //directory
+
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
+
+
+
+
+
+}//end MainActivity class

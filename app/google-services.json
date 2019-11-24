@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "830321370161",
+    "firebase_url": "https://tokyo-crossbar-259922.firebaseio.com",
+    "project_id": "tokyo-crossbar-259922",
+    "storage_bucket": "tokyo-crossbar-259922.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830321370161:android:0d4a22c821217f35a2a110",
+        "android_client_info": {
+          "package_name": "com.example.personalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "830321370161-48oh03mlmim57ebnur9ggue6urvp1i9j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvDLCxPLTw2dqkhtpH2UFkaFQd_ExYGxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "830321370161-48oh03mlmim57ebnur9ggue6urvp1i9j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

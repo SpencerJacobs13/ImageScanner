@@ -31,27 +31,18 @@
         android:layout_rowWeight=".1"/>
 
     <Button
-        android:id="@+id/loadImage"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_column="0"
-        android:layout_columnWeight="1"
-        android:layout_rowWeight=".5"
-        android:text="Load Image"
-        android:layout_columnSpan="1"
-        android:layout_rowSpan="1"/>
-
-    <Button
         android:id="@+id/scanImage"
         android:layout_width="0dp"
-        android:visibility="gone"
         android:layout_height="0dp"
-        android:text="Click this mofucka"
-        android:layout_columnWeight="1"
-        android:layout_rowWeight=".5"
         android:layout_row="4"
+        android:layout_rowSpan="1"
+        android:layout_rowWeight=".5"
         android:layout_column="1"
         android:layout_columnSpan="1"
-        android:layout_rowSpan="1"/>
+        android:layout_columnWeight="1"
+        android:layout_margin="20dp"
+        android:clickable="false"
+        android:visibility="invisible"
+        android:text="Scan Image" />
 
 </GridLayout>
