@@ -6,7 +6,7 @@
         android:id="@+id/takePicture"
         android:title="Take Picture"
         android:icon="@android:drawable/ic_menu_camera"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/uploadPicture"

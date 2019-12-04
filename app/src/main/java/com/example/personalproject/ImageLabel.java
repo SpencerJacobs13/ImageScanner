@@ -1,5 +1,8 @@
 package com.example.personalproject;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 public class ImageLabel {
     float confidence;
     String label;
@@ -13,6 +16,7 @@ public class ImageLabel {
 
     @Override
     public String toString() {
-        return "ID: " + entityId + ". Confidence: " + confidence;
+
+        return entityId + " with " + new DecimalFormat("#0.00%").format(confidence) + " confidence.";
     }
 }

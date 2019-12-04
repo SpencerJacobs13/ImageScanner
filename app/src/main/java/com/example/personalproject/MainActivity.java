@@ -1,20 +1,11 @@
 package com.example.personalproject;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -24,13 +15,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.ActionMenuItemView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
+
 
 public class MainActivity extends AppCompatActivity {
     static final String TAG = "MainActivity";
@@ -43,24 +30,6 @@ public class MainActivity extends AppCompatActivity {
     Bitmap imageMap;
     String imageURI;
     String currentPhotoPath;
-
-
-    //not used yet, might use later.
-    protected boolean sucessfulUpload;
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.takePicture:
-                dispatchTakePictureIntent();
-                return true;
-            case R.id.uploadPicture:
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, UPLOAD_PICTURE_REQUEST);
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +49,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
 
+    //not used yet, might use later.
+    protected boolean sucessfulUpload;
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.takePicture:
+                //dispatchTakePictureIntent();
+                takePicture();
+                return true;
+            case R.id.uploadPicture:
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, UPLOAD_PICTURE_REQUEST);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -117,43 +103,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }//end onActivityResult
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//    private void dispatchTakePictureIntent() {
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//            File photoFile = null;
+//            try{
+//                photoFile = createImageFile();
+//            }catch (IOException e){
+//                //there was an error creating the file
+//                Toast.makeText(this, "Error processing image.", Toast.LENGTH_SHORT).show();
+//            }
+//            //continue only if the file upload worked properly
+//            if(photoFile != null){
+//                Uri photoURI = FileProvider.getUriForFile(this, "com.example.personalproject", photoFile);
+//                imageURI = photoURI.toString();
+//
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST);
+//            }
+//        }
+//    }
 
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-            try{
-                photoFile = createImageFile();
-            }catch (IOException e){
-                //there was an error creating the file
-                Toast.makeText(this, "Error processing image.", Toast.LENGTH_SHORT).show();
-            }
-            //continue only if the file upload worked properly
-            if(photoFile != null){
-                Uri photoURI = FileProvider.getUriForFile(this, "com.example.personalproject", photoFile);
-                imageURI = photoURI.toString();
+//    private File createImageFile() throws IOException{
+//            //create an image file name
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//
+//        File image = File.createTempFile(
+//                imageFileName, //prefix
+//                ".jpg", //suffix
+//                storageDir);  //directory
+//
+//        currentPhotoPath = image.getAbsolutePath();
+//        return image;
+//    }
 
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST);
-            }
-        }
+    public void takePicture(){
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, TAKE_PICTURE_REQUEST);
     }
-
-    private File createImageFile() throws IOException{
-            //create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        File image = File.createTempFile(
-                imageFileName, //prefix
-                ".jpg", //suffix
-                storageDir);  //directory
-
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
 
 
 
